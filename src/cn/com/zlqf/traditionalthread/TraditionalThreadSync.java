@@ -1,5 +1,8 @@
 package cn.com.zlqf.traditionalthread;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class TraditionalThreadSync {
 	public static void main(String[] args) {
 		final Outputer outputer = new Outputer();
@@ -33,11 +36,19 @@ public class TraditionalThreadSync {
 }
 
 class Outputer {
-	public synchronized void output(String str) {
-		char[] cs = str.toCharArray();
-		for(int i=0 ; i<cs.length ; ++i) {
-			System.out.print(cs[i]);
+	Lock lock = new ReentrantLock();
+	public void output(String str) {
+		lock.lock();
+		try {
+			char[] cs = str.toCharArray();
+			for(int i=0 ; i<cs.length ; ++i) {
+				System.out.print(cs[i]);
+			}
+			System.out.println();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			lock.unlock();
 		}
-		System.out.println();
 	}
 }
